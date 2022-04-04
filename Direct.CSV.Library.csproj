@@ -63,12 +63,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Dlls\Automation Studio\PAteam.CSV.Package.1.0.0.nupkg" />
     <None Include="Dlls\Designer\7.5DLL.zip" />
     <None Include="Dlls\Designer\Before7.5DLL.zip" />
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dlls\Automation Studio\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
