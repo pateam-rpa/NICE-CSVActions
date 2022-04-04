@@ -46,11 +46,10 @@ Libary that provides new methods to work with CSV files
 - `Has Header` - Whether or not CSV file contains Header row and if it should be added as first item into result List of Rows
 
 **Returns**:
-- `True` - when the conversion has finished successfully
-- `False` - when the conversion has failed
+- `List of Rows` with values from CSV file
 
 **Where to find**:
-- `List of Rows` with values from CSV file
+- `Library Objects` -> `CSV Actions`
 
 ### Install:
 
