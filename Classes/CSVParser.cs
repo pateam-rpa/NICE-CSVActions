@@ -10,6 +10,20 @@ namespace Direct.CSV.Library.Classes
 {
     public static class CSVParser
     {
+        /// <summary>
+        /// Parses the provided CSV file line by line and imports values to DataTable
+        /// </summary>
+        /// <param name="filePath">Path of the CSV file</param>
+        /// <param name="delimiter">Delimiter by which values in the CSV file are separated</param>
+        /// <param name="hasHeader">Informs whether or not provided CSV file contains
+        /// header row and if should it be added as a column row in the result DT
+        /// </param>
+        /// <returns>
+        /// DataTable with values from CSV file
+        /// </returns>
+        /// <exception cref="Exception">Thrown when unexpected error happened while trying
+        /// to parse CSV file
+        /// </exception>
         public static DataTable ImportCSVToDataTable(string filePath, string delimiter = ",", bool hasHeader = false)
         {
             DataTable dt = new DataTable();
@@ -117,6 +131,16 @@ namespace Direct.CSV.Library.Classes
             dt.Rows.Add(row);
         }
 
+        /// <summary>
+        /// Parses the provided CSV file line by line and imports values to List Of Rows
+        /// </summary>
+        /// <param name="filePath">Path of the CSV file</param>
+        /// <param name="delimiter">Delimiter by which values in the CSV file are separated</param>
+        /// <param name="skipHeader">Should first row conatain column names or not</param>
+        /// <returns>Returns List of Rows with parsed values from CSV
+        /// <exception cref="Exception">hrown when unexpected error happened while trying
+        /// to parse CSV file
+        /// </exception>
         public static DirectCollection<DirectRow> ImportCSVToListOfRows(string filePath, string delimiter = ",", bool skipHeader = false)
         {
             int lineNumber = 1;
