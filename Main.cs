@@ -36,7 +36,7 @@ namespace Direct.CSV.Library
         }
 
         [DirectDom("Import CSV To List Of Rows")]
-        [DirectDomMethod("Import CSV {File Path} delimitied with {Delimiter} into List Of Rows. Header line should be skipped {Skip Header}")]
+        [DirectDomMethod("Import CSV {Full File Path} delimitied with {Delimiter} into List Of Rows. Header line should be skipped {Skip Header}")]
         [MethodDescription("Imports CSV into List Of Rows")]
         public static DirectCollection<DirectRow> ImportCSVToListOfRows(string filePath, string delimiter, bool skipHeader)
         {
@@ -56,7 +56,7 @@ namespace Direct.CSV.Library
         }
 
         [DirectDom("Convert CSV to Xlsx")]
-        [DirectDomMethod("Convert CSV {File Path} with delimiter {Delimiter} and save to Excel Spreasheet {Excel File Path}")]
+        [DirectDomMethod("Convert CSV {Full File Path} with delimiter {Delimiter} and save to Excel Spreadsheet {Excel File Path}")]
         [MethodDescription("Converts CSV to Xlsx")]
         public static bool ConvertCSVtoXlsx(string filePath, string delimiter, string outputPath)
         {
