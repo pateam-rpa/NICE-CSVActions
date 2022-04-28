@@ -56,7 +56,7 @@ namespace Direct.CSV.Library
         }
 
         [DirectDom("Convert CSV to Xlsx")]
-        [DirectDomMethod("Convert CSV {Full File Path} with delimiter {Delimiter} and save to Excel Spreadsheet {Excel File Path}")]
+        [DirectDomMethod("Convert CSV {Full File Path} with delimiter {Delimiter} and save to Excel Spreadsheet {Excel Full File Path}")]
         [MethodDescription("Converts CSV to Xlsx")]
         public static bool ConvertCSVtoXlsx(string filePath, string delimiter, string outputPath)
         {
