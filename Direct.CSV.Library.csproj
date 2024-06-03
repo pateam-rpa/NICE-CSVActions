@@ -39,11 +39,10 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\NICE Systems\Real-Time Designer\Direct.Shared.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>..\..\..\..\..\Program Files (x86)\NICE Systems\Automation Studio\DocumentFormat.OpenXml.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\NICE Systems\Real-Time Designer\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Downloads\log4net\log4net.dll</HintPath>
+    <Reference Include="log4net">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\NICE Systems\Real-Time Designer\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
