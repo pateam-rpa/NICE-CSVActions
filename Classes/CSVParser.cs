@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -185,5 +186,119 @@ namespace Direct.CSV.Library.Classes
             }
             return listOfRows;
         }
+
+        /// <summary>
+        /// Exports a DirectCollection&lt;DirectRow&gt; to a CSV file.
+        /// - Overwrites the file.
+        /// - Replaces occurrences of <paramref name="delimiter"/> inside cell values with <paramref name="delimiterReplacer"/>.
+        /// - Properly escapes quotes and wraps fields in quotes when they contain quotes or CR/LF.
+        /// - Optionally writes a header line.
+        /// </summary>
+        /// <param name="rows">Rows to export (assumed non-null, with non-null Cells).</param>
+        /// <param name="filePath">Destination CSV path.</param>
+        /// <param name="delimiter">Field delimiter (default ",").</param>
+        /// <param name="delimiterReplacer">Replacement text for delimiter occurrences inside cells.</param>
+        /// <param name="header">Optional header row as a plain string (already delimited). Pass null/empty to skip.</param>
+        public static void ExportListOfRowsToCsv(
+            DirectCollection<DirectRow> rows,
+            string filePath,
+            string delimiter = ",",
+            string delimiterReplacer = ".",
+            string header = null)
+        {
+            const string methodName = nameof(ExportListOfRowsToCsv);
+
+            Loggers.LogDebug(methodName, $"Start. filePath='{filePath}', delimiter='{delimiter}', replacer='{delimiterReplacer}', headerProvided={(string.IsNullOrEmpty(header) ? "no" : "yes")}");
+
+            if (rows == null)
+            {
+                throw new ArgumentNullException("rows");
+            }
+
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                throw new ArgumentException("File path is empty.", "filePath");
+            }
+
+            if (string.IsNullOrEmpty(delimiter))
+            {
+                delimiter = ",";
+            }
+
+            if (string.IsNullOrEmpty(delimiterReplacer))
+            {
+                delimiter = ".";
+            }
+
+            var encoding = Encoding.UTF8;
+
+            try
+            {
+                var fullPath = Path.GetFullPath(filePath);
+                var dir = Path.GetDirectoryName(fullPath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                    Loggers.LogDebug(methodName, $"Created directory '{dir}'.");
+                }
+
+                using (var writer = new StreamWriter(fullPath, false /* overwrite */, encoding))
+                {
+                    // Header
+                    if (!string.IsNullOrEmpty(header))
+                    {
+                        writer.WriteLine(SanitizeCell(header, delimiter, delimiterReplacer, true));
+                        Loggers.LogDebug(methodName, "Header written.");
+                    }
+
+                    int rowIndex = 0;
+                    foreach (var row in rows)
+                    {
+                        // assuming row & Cells are non-null per your choice
+                        var sanitized = row.Cells.Select(c => SanitizeCell(c, delimiter, delimiterReplacer, true));
+                        writer.WriteLine(string.Join(delimiter, sanitized));
+
+                        // Log every N rows to avoid spam (tweak N as you like)
+                        if ((++rowIndex % 500) == 0)
+                            Loggers.LogDebug(methodName, $"Written {rowIndex} rows...");
+                    }
+
+                    Loggers.LogDebug(methodName, $"Completed. Total rows written: {rowIndex}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Loggers.LogError(methodName, ex.Message);
+                throw;
+            }
+        }
+
+        private static string SanitizeCell(string value,
+                                           string delimiter,
+                                           string delimiterReplacer,
+                                           bool quoteIfNeeded)
+        {
+            if (value == null) value = string.Empty;
+
+            // Replace delimiter occurrences
+            if (!string.IsNullOrEmpty(delimiter))
+                value = value.Replace(delimiter, delimiterReplacer);
+
+            // Escape quotes by doubling them
+            var containsQuote = value.IndexOf('"') >= 0;
+            if (containsQuote)
+                value = value.Replace("\"", "\"\"");
+
+            // Check for CR/LF
+            var containsNewLine = value.IndexOf('\r') >= 0 || value.IndexOf('\n') >= 0;
+
+            // Wrap in quotes if needed
+            if (quoteIfNeeded && (containsQuote || containsNewLine))
+                return "\"" + value + "\"";
+
+            return value;
+        }
     }
+
+
 }

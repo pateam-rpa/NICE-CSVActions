@@ -55,6 +55,34 @@ namespace Direct.CSV.Library
             }
         }
 
+        [DirectDom("Export List Of Rows To CSV")]
+        [DirectDomMethod("Export List Of Rows {rows} to CSV at {filePath} using delimiter {delimiter}. Replace delimiter with {delimiterReplacer}. Optional header text {header}")]
+        [MethodDescription("Exports the provided List Of Rows to a CSV file")]
+        public static bool ExportListOfRowsToCSV(
+            DirectCollection<DirectRow> rows,
+            string filePath,
+            string delimiter,
+            string delimiterReplacer,
+            string header)
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                Loggers.LogDebug(methodName, "Wrapper called.");
+
+                CSVParser.ExportListOfRowsToCsv(rows, filePath, delimiter, delimiterReplacer, header);
+
+                Loggers.LogDebug(methodName, "Wrapper finished successfully.");
+                return true;
+            }
+            catch (Exception err)
+            {
+                Loggers.LogError(methodName, "Failed to export. " + err.Message);
+                return false;
+            }
+        }
+
         [DirectDom("Convert CSV to Xlsx")]
         [DirectDomMethod("Convert CSV {Full File Path} with delimiter {Delimiter} and save to Excel Spreadsheet {Excel Full File Path}")]
         [MethodDescription("Converts CSV to Xlsx")]
