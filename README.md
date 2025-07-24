@@ -51,6 +51,27 @@ Libary that provides new methods to work with CSV files
 **Where to find**:
 - `Library Objects` -> `CSV Actions`
 
+### Export List Of Rows to CSV
+
+**Description**  
+- Exports the provided **List Of Rows** to a CSV file at the specified path.
+  - Overwrites the file if it exists.
+  - Any occurrence of the chosen delimiter inside a cell is replaced with the provided *delimiterReplacer*.  
+  - Quotes inside cells are doubled, and fields containing quotes or CR/LF are wrapped in quotes.
+
+**Parameters**
+- **rows** – The List Of Rows to export (`DirectCollection<DirectRow>`).  
+- **filePath** – Full path of the output CSV file.  
+- **delimiter** – Delimiter between values (default `","`).  
+- **delimiterReplacer** – String used to replace the delimiter when it appears inside a cell (default `"."`).  
+- **header** – Optional single header line to write as the first row (empty or null to skip).
+
+**Returns**  
+- **bool** – `true` on success; `false` on failure (errors are logged).
+
+**Where to find**:
+- `Library Objects` -> `CSV Actions`
+
 ### Install:
 
 - Copy Direct.CSV.Library.dll to NICE Designer and NICE Client installation directory
