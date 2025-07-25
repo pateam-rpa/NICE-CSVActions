@@ -187,18 +187,6 @@ namespace Direct.CSV.Library.Classes
             return listOfRows;
         }
 
-        /// <summary>
-        /// Exports a DirectCollection&lt;DirectRow&gt; to a CSV file.
-        /// - Overwrites the file.
-        /// - Replaces occurrences of <paramref name="delimiter"/> inside cell values with <paramref name="delimiterReplacer"/>.
-        /// - Properly escapes quotes and wraps fields in quotes when they contain quotes or CR/LF.
-        /// - Optionally writes a header line.
-        /// </summary>
-        /// <param name="rows">Rows to export (assumed non-null, with non-null Cells).</param>
-        /// <param name="filePath">Destination CSV path.</param>
-        /// <param name="delimiter">Field delimiter (default ",").</param>
-        /// <param name="delimiterReplacer">Replacement text for delimiter occurrences inside cells.</param>
-        /// <param name="header">Optional header row as a plain string (already delimited). Pass null/empty to skip.</param>
         public static void ExportListOfRowsToCsv(
             DirectCollection<DirectRow> rows,
             string filePath,
@@ -208,27 +196,20 @@ namespace Direct.CSV.Library.Classes
         {
             const string methodName = nameof(ExportListOfRowsToCsv);
 
-            Loggers.LogDebug(methodName, $"Start. filePath='{filePath}', delimiter='{delimiter}', replacer='{delimiterReplacer}', headerProvided={(string.IsNullOrEmpty(header) ? "no" : "yes")}");
+            Loggers.LogDebug(methodName,
+                $"Start. filePath='{filePath}', delimiter='{delimiter}', replacer='{delimiterReplacer}', headerProvided={(string.IsNullOrEmpty(header) ? "no" : "yes")}");
 
             if (rows == null)
-            {
-                throw new ArgumentNullException("rows");
-            }
+                throw new ArgumentNullException(nameof(rows));
 
             if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentException("File path is empty.", "filePath");
-            }
+                throw new ArgumentException("File path is empty.", nameof(filePath));
 
             if (string.IsNullOrEmpty(delimiter))
-            {
                 delimiter = ",";
-            }
 
             if (string.IsNullOrEmpty(delimiterReplacer))
-            {
-                delimiter = ".";
-            }
+                delimiterReplacer = ".";      // ← fixed: assign to delimiterReplacer
 
             var encoding = Encoding.UTF8;
 
@@ -244,21 +225,22 @@ namespace Direct.CSV.Library.Classes
 
                 using (var writer = new StreamWriter(fullPath, false /* overwrite */, encoding))
                 {
-                    // Header
                     if (!string.IsNullOrEmpty(header))
                     {
-                        writer.WriteLine(SanitizeCell(header, delimiter, delimiterReplacer, true));
+                        var headerCells = header
+                            .Split(new[] { delimiter }, StringSplitOptions.None)
+                            .Select(h => SanitizeCell(h, delimiter, delimiterReplacer, true));
+
+                        writer.WriteLine(string.Join(delimiter, headerCells));
                         Loggers.LogDebug(methodName, "Header written.");
                     }
 
                     int rowIndex = 0;
                     foreach (var row in rows)
                     {
-                        // assuming row & Cells are non-null per your choice
                         var sanitized = row.Cells.Select(c => SanitizeCell(c, delimiter, delimiterReplacer, true));
                         writer.WriteLine(string.Join(delimiter, sanitized));
 
-                        // Log every N rows to avoid spam (tweak N as you like)
                         if ((++rowIndex % 500) == 0)
                             Loggers.LogDebug(methodName, $"Written {rowIndex} rows...");
                     }
@@ -278,7 +260,8 @@ namespace Direct.CSV.Library.Classes
                                            string delimiterReplacer,
                                            bool quoteIfNeeded)
         {
-            if (value == null) value = string.Empty;
+            if (value == null)
+                value = string.Empty;
 
             // Replace delimiter occurrences
             if (!string.IsNullOrEmpty(delimiter))
